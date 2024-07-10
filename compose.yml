@@ -1,0 +1,18 @@
+services:
+  composer:
+    image: composer:2
+    pull_policy: always
+    restart: no
+    volumes:
+      - '.:/app'
+    working_dir: '/app'
+    entrypoint: [ "/bin/bash", "-c" ]
+    command:
+      - |
+        composer install --ignore-platform-reqs
+        vendor/bin/phpstan analyse examples src tests
+        echo -e "\n=== Задача №1: ==="
+        php examples/part_1.php
+        echo -e "\n\n=== Задача №2: ==="
+        vendor/bin/phpunit -c phpunit.xml --testsuite Unit
+        vendor/bin/phpunit -c phpunit.xml --testsuite Feature
